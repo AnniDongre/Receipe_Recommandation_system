@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recommended Recipes</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <style>
+        body {
+            background: linear-gradient(to bottom right, #6a11cb, #2575fc);
+        }
+
+        .container {
+            margin-top: 30px;
+            padding: 30px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+        }
+
+        .recipe-card {
+            height: 420px; /* Fixed height for the entire card */
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s;
+            position: relative;
+            overflow: hidden; /* Prevent overflow issues */
+        }
+
+        .recipe-card:hover {
+            transform: scale(1.02);
+        }
+
+        .card-img-top {
+            height: 200px; /* Fixed height for the image */
+            width: 100%; /* Ensure the image covers the full width */
+            object-fit: cover;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            background-color: #e0e0e0; /* Placeholder background while loading */
+        }
+
+        .card-body {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            margin-bottom: 10px;
+        }
+
+        .card-text {
+            flex-grow: 1;
+            overflow-y: auto; /* Allow scrolling for longer ingredients list */
+            max-height: 120px; /* Set a max-height for the ingredients section */
+            padding-right: 5px; /* Provide padding for scrolling */
+        }
+
+        /* Add a loading spinner for the image */
+        .loading-spinner {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.6);
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            z-index: 1;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Placeholder styling to keep the same size before the image loads */
+        .card-img-top.loading {
+            background: #f0f0f0;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Recommended Recipes</h1>
+        <div class="row">
+            {% for recipe in recommendations %}
+            <div class="col-md-4">
+                <div class="card recipe-card">
+                    <!-- Image container with loading spinner -->
+                    <div class="img-container">
+                        <img class="card-img-top loading" src="{{ recipe['image_url'] }}" alt="{{ recipe['recipe_name'] }}"
+                            onload="this.classList.remove('loading')">
+                        <div class="loading-spinner"></div>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ recipe['recipe_name'] }}</h5>
+                        <p class="card-text">{{ recipe['ingredients_list'] }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        // Remove spinner once image is fully loaded
+        const images = document.querySelectorAll('.card-img-top');
+        images.forEach(img => {
+            img.onload = function () {
+                this.classList.remove('loading');
+                this.nextElementSibling.style.display = 'none'; // Hide the spinner
+            }
+        });
+    </script>
+</body>
+
+</html>
